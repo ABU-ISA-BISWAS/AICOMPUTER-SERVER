@@ -41,16 +41,16 @@ async function run(){
         const  paymentCollection = client.db('computer-point').collection('payments');
 
 
-        const verifyAdmin = async(req,res,next)=>{
-            const requester =req.decoded.email; 
-            const requesterAccount =await usersCollection.findOne({email:requester}) ; 
-            if(requesterAccount.role === 'admin'){
-              next();
-            }
-            else{
-              res.status(403).send({message:'Forbidden'});
-            }  
-          }
+        // const verifyAdmin = async(req,res,next)=>{
+        //     const requester =req.decoded.email; 
+        //     const requesterAccount =await usersCollection.findOne({email:requester}) ; 
+        //     if(requesterAccount.role === 'admin'){
+        //       next();
+        //     }
+        //     else{
+        //       res.status(403).send({message:'Forbidden'});
+        //     }  
+        //   }
 
         app.get('/tools',async(req,res)=>{
             const query ={};
@@ -154,6 +154,33 @@ async function run(){
             res.send({result,token});
   
           });
+
+          app.put('/user/admin/:email', verifyJWT, async(req,res)=>{
+            const email =req.params.email; 
+            const requester =req.decoded.email; 
+            const requesterAccount =await usersCollection.findOne({email:requester}) ; 
+            if(requesterAccount.role === 'admin'){
+              const filter = { email:email };          
+            const updateDoc = {
+              $set:{role:'admin'},
+            };
+            const result = await usersCollection.updateOne(filter, updateDoc);
+            res.send(result);
+            }  
+            else{
+              res.status(403).send({message:'Forbidden'});
+            }   
+          })
+
+          app.get('/admin/:email', async (req,res)=>{
+            const email =req.params.email;
+            const user = await usersCollection.findOne({email:email});
+            const isAdmin = user.role == 'admin';
+            res.send({admin:isAdmin});
+          });
+
+
+
           app.get('/user',verifyJWT, async(req,res) =>{
             const users = await usersCollection.find().toArray();
             res.send(users);
