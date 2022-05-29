@@ -58,6 +58,7 @@ async function run(){
             const tools = await cursor.toArray();
             res.send(tools);
         });
+
         app.post('/tools', async (req, res) => {
           const product = req.body;
           const result = await toolsCollection.insertOne(product);
@@ -77,6 +78,7 @@ async function run(){
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
+        
         app.post('/reviews', async (req, res) => {
             const myReviews = req.body;
             const result = await reviewCollection.insertOne(myReviews);
