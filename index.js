@@ -100,11 +100,11 @@ async function run(){
         });
 
           app.get('/order', verifyJWT, async(req,res)=>{
-            const user=req.query.user;
-            console.log(user);
-           const decodedEmail =req.decoded.email;
+            const user= req.query.user;
+            
+           const decodedEmail = req.decoded.email;
            if(user === decodedEmail){
-            const query ={email:user};
+            const query ={user:user};
             const orders =await orderCollection.find(query).toArray();
             res.send(orders);
            }
@@ -242,7 +242,10 @@ async function run(){
             const result = await paymentCollection.insertOne(payment);
             res.send(updatedDoc);
   
-          })
+          });
+
+
+          
     }
     finally{
 
