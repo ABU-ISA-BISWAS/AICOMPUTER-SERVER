@@ -213,7 +213,8 @@ async function run(){
           app.get('/user',verifyJWT, async(req,res) =>{
             const users = await usersCollection.find().toArray();
             res.send(users);
-          })
+          });
+          
 
 
           app.post('/create-payment-intent',verifyJWT, async(req,res)=>{
